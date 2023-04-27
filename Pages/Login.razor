@@ -51,24 +51,24 @@
 
     async void Home()
     {
-        try{
-            if(user == "Admin" && pass=="123456")
-            {
-                nav.NavigateTo("/Index");
-            }
-            else if(user=="" || pass=="")
-            {
-                throw new InvalidLoginException("Complete All Fields.");
-            }
-            else
-            {
-                throw new InvalidLoginException("Entered Username or Password is Incorrect.");
-            }
-        }
-        catch(InvalidLoginException ex)
-        {
-            await Application.Current.MainPage.DisplayAlert("Alert",ex.Message,"OK");
-        }
+        nav.NavigateTo("/Index");
+        //try{
+        //    if(user == "Admin" && pass=="123456")
+        //    {
+                
+        //    }
+        //    else if(user=="" || pass=="")
+        //    {
+        //        throw new InvalidLoginException("Complete All Fields.");
+        //    }
+        //    else
+        //    {
+        //        throw new InvalidLoginException("Entered Username or Password is Incorrect.");
+        //    }
+        //}
+        //catch(InvalidLoginException ex)
+        //{
+        //    await Application.Current.MainPage.DisplayAlert("Alert",ex.Message,"OK");
+        //}
     }
-
 }

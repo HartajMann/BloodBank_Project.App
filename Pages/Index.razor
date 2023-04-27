@@ -1,6 +1,185 @@
 ﻿@page "/index"
+@using BloodBank_Project.Data
+<div class="container">
+    <div class="row mt-5"></div>
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="blood">
+                        <h2><img src="Img\blood-drop.png" class="blood-drop" />A+ </h2>
+                        
+                    </div><br><br>
+                    <div class="units">
+                        @aPos
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="blood">
+                        <h2><img src="Img\blood-drop.png" class="blood-drop" />B+ </h2>
+                    </div><br><br>
+                    <div class="units">
+                        @bPos
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="blood">
+                        <h2><img src="Img\blood-drop.png" class="blood-drop" />O+ </h2>
+                    </div><br><br>
+                    <div class="units">
+                        @oPos
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3 mb-2">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="blood">
+                        <h2><img src="Img\blood-drop.png" class="blood-drop" />AB+ </h2>
+                    </div><br><br>
+                    <div class="units">
+                        @abPos
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row mt-2">
+        <div class="col-sm-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="blood">
+                        <h2><img src="Img\blood-drop.png" class="blood-drop" />A- </h2>
+                    </div><br><br>
+                    <div class="units">
+                        @aNeg
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="blood">
+                        <h2><img src="Img\blood-drop.png" class="blood-drop" />B- </h2>
+                    </div><br><br>
+                    <div class="units">
+                        @bNeg
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="blood">
+                        <h2><img src="Img\blood-drop.png" class="blood-drop" />O- </h2>
+                    </div><br><br>
+                    <div class="units">
+                        @oNeg
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="blood">
+                        <h2><img src="Img\blood-drop.png" class="blood-drop" />AB- </h2>
+                    </div><br><br>
+                    <div class="units">
+                        @abNeg
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-sm-1" style="margin-left:25px"></div>
+        <div class="col-sm-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="blood">
+                        <img src="Img\group.png"/>
+                    </div><br>
+                    <div class="lastrow">
+                        Total Donors <br>
+                        @donationsCount
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="blood">
+                        <img src="Img\quote-request.png" />
+                    </div><br>
+                    <div class="lastrow">
+                        Total Requests <br>
+                        @issuesCount
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="blood">
+                        <img src="Img\diabetes.png" />
+                    </div><br>
+                    <div class="lastrow">
+                        Total Blood Unit (in ml) <br>
+                        @totalBlood
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="row mt-4">
+        <div class="col">
+            <div class="alert alert-danger">
+                <strong>Error:</strong> @errorMessage
+            </div>
+        </div>
+    </div>
+}
+@code{
+    DbmaManager dbma = new DbmaManager();
+    bool initialized = false;
+    int oNeg, oPos, aNeg, aPos, bNeg, bPos, abNeg, abPos;
+    int totalBlood;
+    int issuesCount;
+    int donationsCount;
+    string errorMessage;
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            (oNeg, oPos, aNeg, aPos, bNeg, bPos, abNeg, abPos) = await dbma.GetBloodRecordsAsync();
+            issuesCount = await dbma.GetIssuesCountForCurrentMonthAsync();
+            donationsCount = await dbma.GetDonationsCountForCurrentMonthAsync();
+            initialized = true;
+            totalBlood = oNeg + oPos + aNeg + aPos + bNeg + bPos + abNeg + abPos;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+}

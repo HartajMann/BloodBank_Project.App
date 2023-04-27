@@ -17,7 +17,7 @@ public partial class App : Application
 
     private async void Window_Created(object sender, EventArgs e)
     {
-        const int defaultWidth = 1200;
+        const int defaultWidth = 1300;
         const int defaultHeight = 800;
 
         var window = (Window)sender;
@@ -37,3 +37,4 @@ public partial class App : Application
         window.MaximumWidth = window.Width;
     }
 }
+

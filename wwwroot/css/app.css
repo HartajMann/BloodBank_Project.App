@@ -86,3 +86,30 @@ a, .btn-link {
     /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     background: linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1))
 }
+.logout {
+    cursor: pointer;
+    font-size: large;
+    color: black;
+    font-weight: bold;
+   
+}
+.units{
+    font-size: xx-large;
+    font-weight:600;
+}
+.heading {
+    font-size: x-large;
+    font-weight: bold;
+}
+.blood-drop{
+    height:30px;
+    width:30px;
+    margin-bottom:8px;
+    margin-right:95px;
+}
+.lastrow {
+    font-size:large;
+}
+.oi oi-droplet{
+    margin-top:10px;
+}

@@ -1,0 +1,94 @@
+﻿@page "/request"
+@using BloodBank_Project.Data;
+<div class="mb-3">
+	<label  class="form-label">Issuer Name</label>
+	<input type="text" class="form-control" @bind="issuedRequest.Name">
+</div>
+<div class="mb-3">
+	<label  class="form-label">Mobile</label>
+	<input type="text" class="form-control" @bind="issuedRequest.Mobile">
+</div>
+<div class="mb-3">
+	<label  class="form-label">Hospital</label>
+	<input type="text" class="form-control" @bind="issuedRequest.Hospital">
+</div>
+<div class="mb-3">
+	<label  class="form-label">Purpose/Reason</label>
+	<input type="text" class="form-control" @bind="issuedRequest.Purpose">
+</div>
+<div class="mb-3">
+	<label f class="form-label">Blood Group</label>
+	<select class="form-select" aria-label="Default select example" @bind="issuedRequest.BloodGroup">
+        <option value="">Select</option>
+		<option value="O+">O+</option>
+		<option value="O-">O-</option>
+		<option value="AB+">AB+</option>
+		<option value="AB-">AB-</option>
+		<option value="A+">A+</option>
+		<option value="A-">A-</option>
+		<option value="B+">B+</option>
+		<option value="B-">B-</option>
+	</select>
+</div>
+<div class="mb-3">
+	<label  class="form-label">No of Units Needed</label>
+	<input type="number" class="form-control" @bind="issuedRequest.Units">
+</div>
+<div class="mb-3">
+	<label  class="form-label">Date of Issue</label>
+	<input type="date" class="form-control" @bind="issuedRequest.DateOfIssue">
+</div>
+<button type="button" class="btn btn-primary" @onclick="UpdateDatabase">Update database</button>
+<button type="button" class="btn btn-primary" @onclick="ClearForm">Clear</button>
+
+@code {
+	private IssuedRequest issuedRequest = new IssuedRequest();
+	DbmaManager dbma = new DbmaManager();
+	private void ClearForm()
+	{
+		issuedRequest = new IssuedRequest();
+	}
+    private async Task UpdateDatabase()
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(issuedRequest.Name) ||
+                string.IsNullOrEmpty(issuedRequest.Mobile) ||
+                string.IsNullOrEmpty(issuedRequest.Hospital) ||
+                string.IsNullOrEmpty(issuedRequest.Purpose) ||
+                string.IsNullOrEmpty(issuedRequest.Units.ToString()))
+            {
+                throw new InvalidIssueBloodException("Complete All fields");
+            }
+            bool isAvailable = await dbma.IsBloodAvailableAsync(issuedRequest.BloodGroup, issuedRequest.Units);
+            if (!isAvailable)
+            {
+                throw new InvalidIssueBloodException("The requested number of units is not available.");
+            }
+            bool result = await dbma.InsertIssuedRequestAsync(issuedRequest);
+            if (result)
+            {
+                (bool success, int remainingUnits) = await dbma.UpdateBloodUnitsAsync(issuedRequest.BloodGroup, issuedRequest.Units);
+                if (!success)
+                {
+                    throw new InvalidIssueBloodException("Unable to update the blood units.");
+                }
+                await Application.Current.MainPage.DisplayAlert("Alert", "Updated Successfully", "OK");
+            }
+            else
+            {
+                throw new InvalidIssueBloodException("Unable to update database try Again");
+            }
+        }
+        catch (InvalidIssueBloodException ex)
+        {
+            await Application.Current.MainPage.DisplayAlert("Alert", ex.Message, "OK");
+        }
+        catch (Exception ex)
+        {
+            await Application.Current.MainPage.DisplayAlert("Alert", $"An error occurred: {ex.Message}", "OK");
+        }
+    }
+
+
+}

@@ -1,0 +1,132 @@
+﻿@page "/History"
+@using BloodBank_Project.Data
+
+
+<h3>History</h3>
+<div class="mb-3">
+    <label class="form-label">Blood Group</label>
+    <select class="form-select" aria-label="Default select example" @bind="currentHistoryType" @onclick="FetchData">
+        <option value="@HistoryType.None">Select</option>
+        <option value="@HistoryType.RegisteredDonors">Registered donors</option>
+        <option value="@HistoryType.Issues">Issues</option>
+        <option value="@HistoryType.Donations">Donations</option>
+    </select>
+</div>
+
+@if (currentHistoryType == HistoryType.RegisteredDonors)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Phone Number</th>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Address</th>
+                <th>City</th>
+                <th>Blood Group</th>
+                <th>Age</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var donor in donors)
+            {
+                <tr>
+                    <td>@donor.PhoneNumber</td>
+                    <td>@donor.Name</td>
+                    <td>@donor.Gender</td>
+                    <td>@donor.Address</td>
+                    <td>@donor.City</td>
+                    <td>@donor.BloodGroup</td>
+                    <td>@donor.Age</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else if (currentHistoryType == HistoryType.Issues)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Mobile</th>
+                <th>Hospital</th>
+                <th>Blood Group</th>
+                <th>Units</th>
+                <th>Reason</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var issue in issues)
+            {
+                <tr>
+                    <td>@issue.Name</td>
+                    <td>@issue.Mobile</td>
+                    <td>@issue.Hospital</td>
+                    <td>@issue.BloodGroup</td>
+                    <td>@issue.Units</td>
+                    <td>@issue.Purpose</td>
+                    <td>@issue.DateOfIssue</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else if (currentHistoryType == HistoryType.Donations)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Mobile</th>
+                <th>Blood Group</th>
+                <th>Date</th>
+                <th>No of Units</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var donation in donations)
+            {
+                <tr>
+                    <td>@donation.PhoneNumber</td>
+                    <td>@donation.BloodGroup</td>
+                    <td>@donation.DateOfDonation</td>
+                    <td>@donation.NoOfUnits</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    DbmaManager Dbma = new DbmaManager();
+    private enum HistoryType
+    {
+        None,
+        RegisteredDonors,
+        Issues,
+        Donations
+    }
+
+    private HistoryType currentHistoryType = HistoryType.None;
+
+    private List<Donor> donors;
+    private List<IssuedRequest> issues;
+    private List<Donate> donations;
+
+    private async Task FetchData()
+    {
+        if (currentHistoryType == HistoryType.RegisteredDonors)
+        {
+            donors = await Dbma.FetchAllDonorsAsync();
+        }
+        else if (currentHistoryType == HistoryType.Issues)
+        {
+            issues = await Dbma.FetchAllIssuesAsync();
+        }
+        else if (currentHistoryType == HistoryType.Donations)
+        {
+            donations = await Dbma.FetchAllDonationsAsync();
+        }
+    }
+}
