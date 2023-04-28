@@ -109,6 +109,7 @@ else if (currentHistoryType == HistoryType.Donations)
 @code {
 	DbmaManager Dbma = new DbmaManager();
 	string errorMessage;
+	// This enum defines the different types of history information that can be displayed.
 	private enum HistoryType
 	{
 		None,
@@ -123,11 +124,12 @@ else if (currentHistoryType == HistoryType.Donations)
 	private List<IssuedRequest> issues = new List<IssuedRequest>();
 	private List<Donate> donations = new List<Donate>();
 
-
+	// This method is called whenever the user selects a different type of history information to display.
 	private async Task FetchData()
 	{
 		try
 		{
+			// Depending on the current history type, this method calls the appropriate method in the DbmaManager class to fetch data from the database.
 			if (currentHistoryType == HistoryType.RegisteredDonors)
 			{
 				donors = await Dbma.FetchAllDonorsAsync();

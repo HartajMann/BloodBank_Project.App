@@ -28,13 +28,16 @@
 @code {
 	Donate donation = new Donate();
 	DbmaManager Dbma = new DbmaManager();
+	// Method to fetch blood group
 	private async Task FetchBloodGroup()
 	{
 		try
 		{
+			// Check if phone number is empty or not
 			if (!string.IsNullOrEmpty(donation.PhoneNumber))
 			{
 				var donor = await Dbma.FetchDonorAsync(donation.PhoneNumber);
+				// If the donor is found, fill the blood group field
 				if (donor != null)
 				{
 					donation.BloodGroup = donor.BloodGroup;
@@ -45,12 +48,13 @@
 				throw new InvalidDonationException("Please Enter A Number");
 			}
 		}
+		// Catch any exception and display an alert with the message
 		catch (InvalidDonationException ex)
 		{
 			await Application.Current.MainPage.DisplayAlert("Alert", ex.Message, "OK");
 		}
 	}
-
+	// Method to upload the donation to the database
 	private async Task UploadDonation()
 	{
 		try
@@ -59,6 +63,7 @@
 			{
 				throw new InvalidDonationException("Complete All Fields Or Enter A Valid Number.");
 			}
+			// If the donation is not null, save it to the database
 			if (donation != null)
 			{
 				bool success = await Dbma.SaveDonationAsync(donation);
@@ -80,6 +85,7 @@
 			await Application.Current.MainPage.DisplayAlert("Alert", ex.Message, "OK");
 		}
 	}
+	// Clear the form fields
 	private void Clear()
 	{
 		donation = new Donate();

@@ -166,7 +166,7 @@
     int issuesCount;
     int donationsCount;
     string errorMessage;
-
+    // Retrieves data from the database and assign the values to variables
     protected override async Task OnInitializedAsync()
     {
         try
@@ -175,8 +175,10 @@
             issuesCount = await dbma.GetIssuesCountForCurrentMonthAsync();
             donationsCount = await dbma.GetDonationsCountForCurrentMonthAsync();
             initialized = true;
+            // Calculate total blood units by adding up all blood types
             totalBlood = oNeg + oPos + aNeg + aPos + bNeg + bPos + abNeg + abPos;
         }
+        // Display error message if there was an exception retrieving data from the database
         catch (Exception ex)
         {
             errorMessage = ex.Message;

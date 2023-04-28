@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,13 +13,14 @@ namespace BloodBank_Project.Data
 	{
 		string connstring;
 		SqlConnection sqlConnection;
+		// Constructor to initialize the variables and establish the database connection
 		public DbmaManager()
 		{
 			connstring = @"Data Source=HARRY-PC\SQLEXPRESS;Initial Catalog=BloodBank;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
 			sqlConnection = new SqlConnection(connstring);
 			sqlConnection.Open();
 		}
-
+		// Method to retrieve the total count of blood units from the database
 		public async Task<(int, int, int, int, int, int, int, int)> GetBloodRecordsAsync()
 		{
 			int oNeg, oPos, aNeg, aPos, bNeg, bPos, abNeg, abPos;
@@ -44,6 +46,7 @@ namespace BloodBank_Project.Data
 
 			return (oNeg, oPos, aNeg, aPos, bNeg, bPos, abNeg, abPos);
 		}
+		// Method to retrieve the count of issued blood units for the current month
 		public async Task<int> GetIssuesCountForCurrentMonthAsync()
 		{
 			int count = 0;
@@ -65,6 +68,7 @@ namespace BloodBank_Project.Data
 
 			return count;
 		}
+		// Method to retrieve the count of donated blood units for the current month
 		public async Task<int> GetDonationsCountForCurrentMonthAsync()
 		{
 			int count = 0;
@@ -86,6 +90,7 @@ namespace BloodBank_Project.Data
 
 			return count;
 		}
+		// This method inserts a new request into the "issued" table in the database
 		public async Task<bool> InsertIssuedRequestAsync(IIssuedRequest request)
 		{
 			string query = @"
@@ -106,6 +111,7 @@ namespace BloodBank_Project.Data
 				return result > 0;
 			}
 		}
+		// This method checks whether there are enough units of a particular blood group available in the database
 		public async Task<bool> IsBloodAvailableAsync(string bloodGroup, int units)
 		{
 			string columnName = GetColumnNameForBloodGroup(bloodGroup);
@@ -128,6 +134,7 @@ namespace BloodBank_Project.Data
 				}
 			}
 		}
+		// This method returns the name of the column corresponding to the given blood group
 		private string GetColumnNameForBloodGroup(string bloodGroup)
 		{
 			switch (bloodGroup)
@@ -152,6 +159,7 @@ namespace BloodBank_Project.Data
 					throw new ArgumentException("Invalid blood group");
 			}
 		}
+		// This method updates the available blood units in the corresponding column for the given blood group
 		public async Task<(bool, int)> UpdateBloodUnitsAsync(string bloodGroup, int units)
 		{
 			string columnName = GetColumnNameForBloodGroup(bloodGroup);
@@ -185,7 +193,7 @@ namespace BloodBank_Project.Data
 				return (result > 0, availableUnits - units);
 			}
 		}
-
+		// Registers a new donor in the database
 		public async Task<bool> RegisterDonorAsync(Idonor donor)
 		{
 			string query = @"
@@ -206,7 +214,7 @@ namespace BloodBank_Project.Data
 				return result > 0;
 			}
 		}
-
+		// Fetches a donor from the database by their phone number
 		public async Task<Donor> FetchDonorAsync(string phoneNumber)
 		{
 			Donor donor = null;
@@ -239,7 +247,7 @@ namespace BloodBank_Project.Data
 
 			return donor;
 		}
-
+		//update donor information in the database
 		public async Task<bool> UpdateDonorAsync(Donor donor)
 		{
 			string query = @"
@@ -261,7 +269,7 @@ namespace BloodBank_Project.Data
 				return result > 0;
 			}
 		}
-
+		//delete donor from the database
 		public async Task<bool> DeleteDonorAsync(string phoneNumber)
 		{
 			string query = @"
@@ -276,6 +284,7 @@ namespace BloodBank_Project.Data
 				return result > 0;
 			}
 		}
+		//This method fetches a donor from the database based on their phone number.
 		public async Task<Donor> FetchDonorsAsync(string phoneNumber)
 		{
 			Donor donor = null;
@@ -308,7 +317,7 @@ namespace BloodBank_Project.Data
 
 			return donor;
 		}
-
+		//This method saves a donation made by a donor to the database.
 		public async Task<bool> SaveDonationAsync(Idonate donation)
 		{
 			string query = @"
@@ -326,6 +335,7 @@ namespace BloodBank_Project.Data
 				return result > 0;
 			}
 		}
+		//This method updates the total number of blood units for a particular blood group in the database after a donation is made.
 		public async Task<bool> UpdateBloodUnitsForDonationAsync(string bloodGroup, int units)
 		{
 			string columnName = GetColumnNameForBloodGroup(bloodGroup);
@@ -340,6 +350,7 @@ namespace BloodBank_Project.Data
 				return result > 0;
 			}
 		}
+		//This method fetches a list of all donors from the database.
 		public async Task<List<Donor>> FetchAllDonorsAsync()
 		{
 			List<Donor> donors = new List<Donor>();
@@ -364,7 +375,7 @@ namespace BloodBank_Project.Data
 			}
 			return donors;
 		}
-
+		//this method fetches all the issued requests from the database
 		public async Task<List<IssuedRequest>> FetchAllIssuesAsync()
 		{
 			List<IssuedRequest> issues = new List<IssuedRequest>();
@@ -389,7 +400,7 @@ namespace BloodBank_Project.Data
 			}
 			return issues;
 		}
-
+		//this method fetches all the Donations from the database
 		public async Task<List<Donate>> FetchAllDonationsAsync()
 		{
 			List<Donate> donations = new List<Donate>();

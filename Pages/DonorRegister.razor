@@ -85,10 +85,12 @@
 @code {
 	Donor donor = new Donor();
 	DbmaManager Dbma = new DbmaManager();
+	// Clear the form 
 	private void clear()
 	{
 		donor = new Donor();
 	}
+	// Register a new donor by saving the data in the form to the database
 	private async Task RegisterDonor()
 	{
 		try
@@ -118,6 +120,7 @@
 			await Application.Current.MainPage.DisplayAlert("Alert", $"An error occurred: {ex.Message}", "OK");
 		}
 	}
+	// Fetch donor data from the database using their phone number
 	private async Task FetchData()
 	{
 		try
@@ -145,7 +148,7 @@
 			await Application.Current.MainPage.DisplayAlert("Alert", $"An error occurred: {ex.Message}", "OK");
 		}
 	}
-
+	// Update a donor's information in the database
 	private async Task UpdateDonor()
 	{
 		try
@@ -175,7 +178,7 @@
 			await Application.Current.MainPage.DisplayAlert("Alert", $"An error occurred: {ex.Message}", "OK");
 		}
 	}
-
+	// Delete a donor's information in the database
 	private async Task DeleteDonor()
 	{
 		try

@@ -74,14 +74,17 @@
 @code {
 	private IssuedRequest issuedRequest = new IssuedRequest();
 	DbmaManager dbma = new DbmaManager();
+	// This method is called to reset the form.
 	private void ClearForm()
 	{
 		issuedRequest = new IssuedRequest();
 	}
+	// This method is called when the user clicks the "Submit" button to issue blood.
 	private async Task UpdateDatabase()
 	{
 		try
 		{
+			//the method checks that all required fields in the form have been completed.
 			if (string.IsNullOrEmpty(issuedRequest.Name) ||
 				string.IsNullOrEmpty(issuedRequest.Mobile) ||
 				string.IsNullOrEmpty(issuedRequest.Hospital) ||
@@ -90,11 +93,13 @@
 			{
 				throw new InvalidIssueBloodException("Complete All fields");
 			}
+			//the method checks that the requested number of units of blood is available in the database.
 			bool isAvailable = await dbma.IsBloodAvailableAsync(issuedRequest.BloodGroup, issuedRequest.Units);
 			if (!isAvailable)
 			{
 				throw new InvalidIssueBloodException("The requested number of units is not available.");
 			}
+			// If the required fields are completed and the requested blood is available, the method updates the database.
 			bool result = await dbma.InsertIssuedRequestAsync(issuedRequest);
 			if (result)
 			{

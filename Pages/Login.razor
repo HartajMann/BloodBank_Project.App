@@ -1,4 +1,10 @@
-﻿@page "/"
+﻿@*27-04-2023
+This project is created by Hartaj,Gurmaher,Paramveer,Abdullah. The Blood Bank desktop application is a .NET MAUI Blazor app 
+that helps manage blood donation-related information.
+The application allows the user to register donors, record donations made, and issue blood. The history page displays 
+all the information saved in the database, giving the user a comprehensive overview of the blood bank's activities.
+*@
+@page "/"
 @layout LoginLayout
 @inject NavigationManager nav
 @using BloodBank_Project.Data
@@ -40,6 +46,7 @@
 {
 	string user = "";
 	string pass = "";
+	// These are methods that are called when the username or password input is changed
 	private void username(ChangeEventArgs e)
 	{
 		user = e.Value.ToString();
@@ -48,24 +55,28 @@
 	{
 		pass = e.Value.ToString();
 	}
-
+	// This is the method that is called when the login button is clicked
 	async void Home()
 	{
 		try
 		{
+			// This checks if the username and password are correct and navigates to the home page 
 			if (user == "Admin" && pass == "123456")
 			{
-
+				nav.NavigateTo("/index");
 			}
+			// This throws an exception if either the username or password is blank
 			else if (user == "" || pass == "")
 			{
 				throw new InvalidLoginException("Complete All Fields.");
 			}
+			// This throws an exception if the username or password is incorrect
 			else
 			{
 				throw new InvalidLoginException("Entered Username or Password is Incorrect.");
 			}
 		}
+		// This catches the exceptions thrown above and displays an alert message with the exception message
 		catch (InvalidLoginException ex)
 		{
 			await Application.Current.MainPage.DisplayAlert("Alert", ex.Message, "OK");
