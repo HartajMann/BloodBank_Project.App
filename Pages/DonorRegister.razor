@@ -1,48 +1,85 @@
 ﻿@page "/Register"
 @using BloodBank_Project.Data
-<div class="mb-3">
+<h3 style="text-align:center">Register Donor</h3>
+<div class="row mt-5">
 	<label class="form-label">Phone Number</label>
-	<input type="text" class="form-control" @bind="donor.PhoneNumber" >
 </div>
-<button type="button" class="btn btn-primary" @onclick="FetchData">fetch</button>
-<div class="mb-3">
-	<label class="form-label">Name</label>
-	<input type="text" class="form-control" @bind="donor.Name">
+<div class="row mb-3">
+	<div class="col-9"><input type="text" class="form-control" @bind="donor.PhoneNumber"></div>
+	<div class="col-3"><button type="button" class="btn btn btn-dark" style="width:200px" @onclick="FetchData">Fetch Info</button></div>
 </div>
-<div class="mb-3">
-	<label class="form-label">Gender</label>
-	<input type="text" class="form-control" @bind="donor.Gender">
+<div class="row">
+	<div class="col-6">
+		<label class="form-label">Name</label>
+	</div>
+	<div class="col-6">
+		<label class="form-label">Gender</label>
+	</div>
 </div>
-<div class="mb-3">
-	<label class="form-label">Address</label>
-	<input type="text" class="form-control" @bind="donor.Address">
+<div class="row mb-3">
+	<div class="col-6">
+		<input type="text" class="form-control" @bind="donor.Name">
+	</div>
+	<div class="col-6">
+		<input type="text" class="form-control" @bind="donor.Gender">
+	</div>
 </div>
-<div class="mb-3">
-	<label class="form-label">City/Town</label>
-	<input type="text" class="form-control" @bind="donor.City">
+<div class="row">
+	<div class="col-9">
+		<label class="form-label">Address</label>
+	</div>
+	<div class="col-3">
+		<label class="form-label">City/Town</label>
+	</div>
 </div>
-<div class="mb-3">
-	<label f class="form-label">Blood Group</label>
-	<select class="form-select" aria-label="Default select example" @bind="donor.BloodGroup">
-		<option value="">Select</option>
-		<option value="O+">O+</option>
-		<option value="O-">O-</option>
-		<option value="AB+">AB+</option>
-		<option value="AB-">AB-</option>
-		<option value="A+">A+</option>
-		<option value="A-">A-</option>
-		<option value="B+">B+</option>
-		<option value="B-">B-</option>
-	</select>
+<div class="row mb-3">
+	<div class="col-9">
+		<input type="text" class="form-control" @bind="donor.Address">
+	</div>
+	<div class="col-3">
+		<input type="text" class="form-control" @bind="donor.City">
+	</div>
 </div>
-<div class="mb-3">
-	<label class="form-label">Age</label>
-	<input type="number" class="form-control" @bind="donor.Age">
+<div class="row"> <div class="col-12"><label f class="form-label">Blood Group</label></div></div>
+<div class="row mb-3">
+	<div class="col-12">
+		<select class="form-select" aria-label="Default select example" @bind="donor.BloodGroup">
+			<option value="">Select</option>
+			<option value="O+">O+</option>
+			<option value="O-">O-</option>
+			<option value="AB+">AB+</option>
+			<option value="AB-">AB-</option>
+			<option value="A+">A+</option>
+			<option value="A-">A-</option>
+			<option value="B+">B+</option>
+			<option value="B-">B-</option>
+		</select>
+	</div>
 </div>
-<button type="button" class="btn btn-primary" @onclick="RegisterDonor">Register</button>
-<button type="button" class="btn btn-primary" @onclick="UpdateDonor">Update database</button>
-<button type="button" class="btn btn-primary" @onclick="DeleteDonor">Delete</button>
-<button type="button" class="btn btn-primary" @onclick="clear">Clear</button>
+<div class="row">
+	<div class="col-12">
+		<label class="form-label">Age</label>
+	</div>
+</div>
+<div class="row mb-3">
+	<div class="col-12">
+		<input type="number" class="form-control" @bind="donor.Age">
+	</div>
+</div>
+<div class="row mt-5">
+	<div class="col-3">
+		<button type="button" style="width:200px" class="btn btn btn-success" @onclick="RegisterDonor">Register</button>
+	</div>
+	<div class="col-3">
+		<button type="button" style="width:200px" class="btn btn btn-primary" @onclick="UpdateDonor">Update database</button>
+	</div>
+	<div class="col-3">
+		<button type="button" style="width:200px" class="btn btn btn-danger" @onclick="DeleteDonor">Delete Info</button>
+	</div>
+	<div class="col-3">
+		<button type="button" style="width:200px" class="btn btn btn-dark" @onclick="clear">Reset</button>
+	</div>
+</div>
 
 
 @code {
@@ -56,8 +93,8 @@
 	{
 		try
 		{
-			if (string.IsNullOrEmpty(donor.PhoneNumber) || string.IsNullOrEmpty(donor.Name)||
-			string.IsNullOrEmpty(donor.Gender) || string.IsNullOrEmpty(donor.Address)||
+			if (string.IsNullOrEmpty(donor.PhoneNumber) || string.IsNullOrEmpty(donor.Name) ||
+			string.IsNullOrEmpty(donor.Gender) || string.IsNullOrEmpty(donor.Address) ||
 			string.IsNullOrEmpty(donor.City) || string.IsNullOrEmpty(donor.BloodGroup) || string.IsNullOrEmpty(donor.Age.ToString()))
 			{
 				throw new InvalidDonorRegisterException("Fill All Fields");
@@ -85,7 +122,7 @@
 	{
 		try
 		{
-			if(string.IsNullOrEmpty(donor.PhoneNumber))
+			if (string.IsNullOrEmpty(donor.PhoneNumber))
 			{
 				throw new InvalidDonorRegisterException("Please Enter A Phone Number");
 			}

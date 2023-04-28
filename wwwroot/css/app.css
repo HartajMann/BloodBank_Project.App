@@ -2,6 +2,7 @@
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #FFFFF9;
 }
 
 h1:focus {
@@ -84,7 +85,7 @@ a, .btn-link {
 }
 .gradient-custom {
     /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-    background: linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1))
+    background: linear-gradient(to bottom, rgba(11,35,99,255), rgba(58,6,71,255))
 }
 .logout {
     cursor: pointer;
@@ -112,4 +113,27 @@ a, .btn-link {
 }
 .oi oi-droplet{
     margin-top:10px;
+}
+.card{
+    background-color:black;
+}
+label{
+    font-family:'Times New Roman', Times, serif;
+    font-weight:bold;
+    font-size:large;
+}
+select {
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: bold;
+    font-size: large;
+}
+button {
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: bold;
+    font-size: large;
+}
+h3 {
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: bold;
+    font-size: xx-large;
 }

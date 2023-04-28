@@ -1,59 +1,87 @@
 ﻿@page "/Donation_page"
 @using BloodBank_Project.Data
 
-<h3>Donation_Page</h3>
+<h3 style="text-align:center">Blood Unit Collection</h3>
 
-<div class="mb-3">
-    <label class="form-label">Phone Number</label>
-    <input type="text" class="form-control" @bind="donation.PhoneNumber" @onblur="FetchBloodGroup">
+<div class="mb-4 mt-5">
+	<label class="form-label">Phone Number</label>
+	<input type="text" class="form-control" @bind="donation.PhoneNumber" @onblur="FetchBloodGroup">
 </div>
-<div class="mb-3">
-    <label class="form-label">Blood Group</label>
-    <input type="text" class="form-control" @bind="donation.BloodGroup" readonly>
-</div>
-
-<div class="mb-3">
-    <label class="form-label">Date Of Donation</label>
-    <input type="date" class="form-control" @bind="donation.DateOfDonation">
+<div class="mb-4">
+	<label class="form-label">Blood Group</label>
+	<input type="text" class="form-control" @bind="donation.BloodGroup" readonly>
 </div>
 
-<div class="mb-3">
-    <label class="form-label">No of units Donated</label>
-    <input type="number" class="form-control" @bind="donation.NoOfUnits">
+<div class="mb-4">
+	<label class="form-label">Date Of Donation</label>
+	<input type="date" class="form-control" @bind="donation.DateOfDonation">
 </div>
-<button type="button" class="btn btn-primary" @onclick="UploadDonation">Upload to database</button>
+
+<div class="mb-5">
+	<label class="form-label">No of Units Donated</label>
+	<input type="number" class="form-control" @bind="donation.NoOfUnits">
+</div>
+<div class="mt-5" style="text-align:center">
+	<button type="button" class="btn btn-success" @onclick="UploadDonation">Upload to Database</button>
+</div>
 
 @code {
-     Donate donation = new Donate();
-    DbmaManager Dbma = new DbmaManager();
-    private async Task FetchBloodGroup()
-    {
-        if (!string.IsNullOrEmpty(donation.PhoneNumber))
-        {
-            var donor = await Dbma.FetchDonorAsync(donation.PhoneNumber);
-            if (donor != null)
-            {
-                donation.BloodGroup = donor.BloodGroup;
-            }
-           
-        }
-    }
+	Donate donation = new Donate();
+	DbmaManager Dbma = new DbmaManager();
+	private async Task FetchBloodGroup()
+	{
+		try
+		{
+			if (!string.IsNullOrEmpty(donation.PhoneNumber))
+			{
+				var donor = await Dbma.FetchDonorAsync(donation.PhoneNumber);
+				if (donor != null)
+				{
+					donation.BloodGroup = donor.BloodGroup;
+				}
+			}
+			else
+			{
+				throw new InvalidDonationException("Please Enter A Number");
+			}
+		}
+		catch (InvalidDonationException ex)
+		{
+			await Application.Current.MainPage.DisplayAlert("Alert", ex.Message, "OK");
+		}
+	}
 
-    private async Task UploadDonation()
-    {
-        if (donation != null)
-        {
-            bool success = await Dbma.SaveDonationAsync(donation);
-            if (success)
-            {
-                await Dbma.UpdateBloodUnitsForDonationAsync(donation.BloodGroup, donation.NoOfUnits);
-                Console.WriteLine("Donation uploaded successfully");
-            }
-            else
-            {
-                // You can show an error message here
-                Console.WriteLine("Failed to upload the donation");
-            }
-        }
-    }
+	private async Task UploadDonation()
+	{
+		try
+		{
+			if (string.IsNullOrEmpty(donation.PhoneNumber) || string.IsNullOrEmpty(donation.DateOfDonation.ToString()) || string.IsNullOrEmpty(donation.BloodGroup) || string.IsNullOrEmpty(donation.NoOfUnits.ToString()))
+			{
+				throw new InvalidDonationException("Complete All Fields Or Enter A Valid Number.");
+			}
+			if (donation != null)
+			{
+				bool success = await Dbma.SaveDonationAsync(donation);
+				if (success)
+				{
+					await Dbma.UpdateBloodUnitsForDonationAsync(donation.BloodGroup, donation.NoOfUnits);
+					Clear();
+					await Application.Current.MainPage.DisplayAlert("Alert", "Upload Complete.", "OK");
+
+				}
+				else
+				{
+					throw new InvalidDonationException("Error occured Try Again.");
+				}
+			}
+		}
+		catch (InvalidDonationException ex)
+		{
+			await Application.Current.MainPage.DisplayAlert("Alert", ex.Message, "OK");
+		}
+	}
+	private void Clear()
+	{
+		donation = new Donate();
+	}
 }
